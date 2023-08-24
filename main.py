@@ -173,7 +173,7 @@ class Dibujar:
         self.decimal_acumuladoX,self.decimal_acumuladoY=0,0
         
     
-    def __init__(self,Ppmmx, Ppmmy,screen):#ppmm se usara para calcular la cantidad de pasos que deve de dar por medida
+    def __init__(self,Ppmmx, Ppmmy,screen):#ppmm se usara para calcular la cantidad de pasos por mm
         self.init(Ppmmx,Ppmmy)
         self.screen=screen
         self.FrecPasos=0.003
@@ -228,10 +228,7 @@ class Dibujar:
         
         
     
-    def bresenham(self,x0,y0,x1,y1):#uno introduce los parametros cada que se llama a la funcion, esta se llama cada lectura de gcode
-#        self.puntos=[]
-        #los parametros de entrada de la funcion son decimales, tienen que ser enteros, pero sin redondear
-        #si 
+    def bresenham(self,x0,y0,x1,y1):
         dx=x1-x0
         dy=y1-y0
         if dy<0:
@@ -246,13 +243,11 @@ class Dibujar:
             stepx=1
         x=x0
         y=y0
-        #print(x,y,"or")
- #       self.puntos.append([x,y])
+
         self.puntoX=x
         self.puntoY=y
         self.girarMotorY(self.puntoY-self.puntoYa)
         self.girarMotorX(self.puntoX-self.puntoXa)
-        #print(self.puntoX-self.puntoXa,self.puntoY-self.puntoYa)
         self.puntoXa=self.puntoX
         self.puntoYa=self.puntoY
         if dx>dy:
@@ -266,12 +261,10 @@ class Dibujar:
                 else:
                     y=y+stepy
                     p=p+incNE
-                #print(x,y,"or")
                 self.puntoX=x
                 self.puntoY=y
                 self.girarMotorY(self.puntoY-self.puntoYa)
                 self.girarMotorX(self.puntoX-self.puntoXa)
-                #print(self.puntoX-self.puntoXa,self.puntoY-self.puntoYa)
                 self.puntoXa=self.puntoX
                 self.puntoYa=self.puntoY
         else:
@@ -285,38 +278,16 @@ class Dibujar:
                 else:
                     x=x+stepx
                     p=p+incNE
-                #print(x,y,"or")
                 self.puntoX=x
                 self.puntoY=y
                 self.girarMotorY(self.puntoY-self.puntoYa)
                 self.girarMotorX(self.puntoX-self.puntoXa)
-                #print(self.puntoX-self.puntoXa,self.puntoY-self.puntoYa)
                 self.puntoXa=self.puntoX
                 self.puntoYa=self.puntoY
-#                self.puntos.append([x,y])
- #       self.moverLinea(self.puntos)
 
-        
-    """def zeta(self,zeta):
-        
-        self.Z=zeta
-        if self.Z!=self.Za:
-            #print("zeta",zeta)
-            if self.Z <=0:
-                #bobina.value(0)#el selenoide.
-                time.sleep(.3)
-            elif self.Z>0:
-                #bobina.value(1)#el selenoide.
-                time.sleep(.5)#creo que puede ser nucho mas rapido que esto, pero eso ya depende del hardware
-                #levanta
-        self.Za=self.Z
-    """
+       
     def toolChange(self,ToNum):
-        duty=self.tools[ToNum]
-        self.Z=5
-        self.zata(self.Z)
-        servomotor.duty(duty)
-        time.sleep(.5)#puedo hacer que se adapte al que tan distante es el color multiplicandolo por la diferencia entre ToNum anterior y actual,
+        pass# por ahora no hace nada
         
         
     def tamañof(self,archivo):
@@ -326,7 +297,6 @@ class Dibujar:
         print(self.tamaño,"el tamaño")
         
     def dibujar(self,nombre):
-        
         enables.value(0)
         self.nombre=nombre
         print(self.nombre,"NOMBRE")
@@ -340,8 +310,6 @@ class Dibujar:
         self.screen.move_to(0,1)
         self.screen.putstr("drawing... ")
         for line in archivo:
-        #mienras=["G00 X 10.5 Y 10.5","G00 X 10.5 Y 10.5"]
-        #for line in mienras:
             con+=1
             
             l=line[0:3]
@@ -371,34 +339,17 @@ class Dibujar:
                     if i =="X" or i=="x":
                         self.x=float(line[c+1:c+6])
  #                       pprint("x",self.x)
-            #desde aqui indica para moverse
- 
-            # por aqui se deverian de multiplicar las coordenadas por los ppmm antes de pasarselas a bresenham
-            #self.xa=self.xa*self.ppmm
-            #self.ya=self.ya*self.ppmm
-            #self.x=self.x*self.ppmm
-            
-                #primero con una variable
-#                print("self.Y: ",self.y*self.ppmm)
+
                 
                 resy= self.y*self.ppmmy+self.decimaly
                 self.decimaly= resy-int(resy)
                 BresY=int(resy)
-                #print(BresY)
                 
                 resx= self.x*self.ppmmx+self.decimalx
                 self.decimalx= resx-int(resx)
-                #print(self.x,self.ppmm,self.x*self.ppmm,"ppmm")
                 
                 BresX=int(resx)
-                #print(BresX)
                 
-                #ahora las cordenadas anteriores y las actuales son decimales,
-                #self.screen.move_to(0,1)
-                #self.screen.putstr("drawing... ")
-                #self.screen.move_to(11,1)
-                #self.screen.putstr(str(round(con/(self.tamaño/100),1))+"%   ")
-
                 self.bresenham(self.xa,self.ya,BresX,BresY)# aqui no se le pueden dar redondeados.
                 self.xa=BresX
                 self.ya=BresY
@@ -412,6 +363,4 @@ class Dibujar:
 
 
 Menu=menu()
-#dibujo=Dibujar(4,-4.7)
 print("las clases estan definidas")
-#315
